@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MrTomato_plays</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0d0d0d;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      margin-top: 100px;
+      font-size: 3em;
+      color: #00ff99;
+      text-shadow: 0 0 10px #00ff99;
+    }
+    .subscribe-btn {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 12px 25px;
+      background: #ff0000;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 0 10px #ff0000;
+      transition: 0.3s ease;
+    }
+    .subscribe-btn:hover {
+      background: #cc0000;
+      box-shadow: 0 0 20px #ff0000;
+    }
+    .video-container {
+      margin-top: 40px;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>MrTomato_plays</h1>
+  <a class="subscribe-btn" href="https://www.youtube.com/@MrTomato_plays" target="_blank">
+    Subscribe on YouTube
+  </a>
+
+  <div class="video-container">
+    <iframe width="560" height="315"
+      src="https://www.youtube.com/embed?listType=user_uploads&list=MrTomato_plays"
+      frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray = [];
+
+    window.addEventListener("resize", function () {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const mouse = {
+      x: undefined,
+      y: undefined
+    }
+
+    canvas.addEventListener('mousemove', function (event) {
+      mouse.x = event.x;
+      mouse.y = event.y;
+      for (let i = 0; i < 5; i++) {
+        particlesArray.push(new Particle());
+      }
+    });
+
+    class Particle {
+      constructor() {
+        this.x = mouse.x;
+        this.y = mouse.y;
+        this.size = Math.random() * 5 + 1;
+        this.speedX = Math.random() * 3 - 1.5;
+        this.speedY = Math.random() * 3 - 1.5;
+        this.color = 'hsl(' + Math.random() * 360 + ', 100%, 50%)';
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.size *= 0.95;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = 'rgba(0,0,0,0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+        if (particlesArray[i].size < 0.5) {
+          particlesArray.splice(i, 1);
+          i--;
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
